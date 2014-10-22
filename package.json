@@ -1,0 +1,11 @@
+{
+  "name": "scheduled-scraper",
+  "version": "1.0.0",
+  "description": "Spike a scheduled Node.js job on Heroku",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Allan <michaelallan@optushome.com.au>",
+  "private": true
+}
