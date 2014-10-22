@@ -21,6 +21,9 @@ var email = {
 };
 
 client.sendMail(email, function (err, info) {
-    if (err) console.log(err);
-    console.log('Message send: ' + info.response);
+    if (err) {
+        console.log(err);
+    } else {
+        console.log('Message send: ' + info.response);
+    }
 });
