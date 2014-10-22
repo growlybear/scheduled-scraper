@@ -10,5 +10,9 @@
   "private": true,
   "engines": {
     "node": "0.10.x"
+  },
+  "dependencies": {
+    "mongoose": "^3.8.17",
+    "sendgrid": "^1.2.1"
   }
 }
