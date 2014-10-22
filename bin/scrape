@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+
+var nodemailer = require('nodemailer');
+var sgTransport = require('nodemailer-sendgrid-transport');
+
+var options = {
+    auth: {
+        api_user: process.env.SENDGRID_USERNAME,
+        apikey: process.env.SENDGRID_PASSWORD
+    }
+};
+
+var client = nodemailer.createTransport(sgTransport(options));
+
+var email = {
+    from: 'mike@growlybear.net.au',
+    to: 'michaelallan@optushomem.com.au',
+    subject: 'Heroku and Sendgrid and Node, oh my',
+    text: 'By golly, it worked!',
+    html: '<b>By golly, it worked!</b>'
+};
+
+client.sendMail(email, function (err, info) {
+    if (err) console.log(err);
+    console.log('Message send: ' + info.response);
+});
