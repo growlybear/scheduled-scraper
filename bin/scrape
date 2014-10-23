@@ -1,17 +1,64 @@
 #!/usr/bin/env node
 
+var workflow = require('./lib/workflow');
+var url = require('url');
+var async = require('async');
+
 var sendgrid  = require('sendgrid')(
     process.env.SENDGRID_USERNAME,
     process.env.SENDGRID_PASSWORD
 );
 
-sendgrid.send({
-    to:      'michaelallan@optushome.com.au',
-    from:    'noreply@scheduled-scraper.herokuapp.com',
-    subject: 'Scrape results for ' + (new Date).toDateString(),
-    text:    'My second email through SendGrid.'
-}, function (err, json) {
-    if (err) {
-        return console.error(err);
-    }
+// Send process report
+function report(result) {
+    sendgrid.send({
+        to:      'michaelallan@optushome.com.au',
+        from:    'noreply@scheduled-scraper.herokuapp.com',
+        subject: 'Scrape results for ' + (new Date).toDateString(),
+        text:    result
+    }, function (err, json) {
+        if (err) {
+            return console.error(err);
+        }
+    });
+}
+
+// Starting page at the Vic Supreme Court
+var civilCasesPage = url.format({
+    protocol: 'http',
+    hostname: 'www.supremecourt.vic.gov.au',
+    pathname: 'home/forms+fees+and+services/registry+services/list+of+civil+cases/'
+});
+
+
+// Begin processing ...
+async.waterfall([
+    // dummy function, just to allow parameters to be passed in to the waterfall initially
+    // cf. https://github.com/caolan/async/issues/14
+    function (callback) {
+        callback(null, civilCasesPage);
+    },
+
+    // fetch the page containing a link to the court case list, updated daily,
+    // and archive it locally so we can review and revise our selectors as necessary
+    workflow.fetchCaseListPage,
+
+    // extract the link to a pdf of the latest court cases
+    workflow.extractDailyListUrl,
+
+    // download the pdf
+    workflow.downloadListPdf,
+
+    // extract all data from the pdf as an array of strings
+    workflow.extractCaseListData,
+
+    // write the json data to file
+    workflow.saveCasesJson
+
+], function (err) {
+    if (err) return console.error('Processing failed: ', err);
+
+    report('It worked :-)');
+
+    console.log('Done!');
 });
