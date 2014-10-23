@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var workflow = require('./lib/workflow');
+var workflow = require('../lib/workflow');
 var url = require('url');
 var async = require('async');
 
