@@ -35,10 +35,10 @@
 // SENDGRID_USER:     growlybear_2
 // SENDGRID_USERNAME: app30911505@heroku.com
 
-var sendgrid  = require('sendgrid')('app30911505@heroku.com', 'kzmvxepo');
+var sendgrid  = require('sendgrid')(process.env.SENDGRID_USERNAME, process.env.SENDGRID_PASSWORD);
 sendgrid.send({
   to:       'michaelallan@optushome.com.au',
-  from:     'mike@heroku.com',
+  from:     'other@example.com',
   subject:  'Hello World',
   text:     'My first email through SendGrid.'
 }, function(err, json) {
