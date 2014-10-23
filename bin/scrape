@@ -1,29 +1,47 @@
 #!/usr/bin/env node
 
-var nodemailer = require('nodemailer');
-var sgTransport = require('nodemailer-sendgrid-transport');
+// var nodemailer = require('nodemailer');
+// var sgTransport = require('nodemailer-sendgrid-transport');
 
-var options = {
-    auth: {
-        api_user: process.env.SENDGRID_USERNAME,
-        apikey: process.env.SENDGRID_PASSWORD
-    }
-};
+// var options = {
+//     auth: {
+//         api_user: process.env.SENDGRID_USERNAME,
+//         apikey: process.env.SENDGRID_PASSWORD
+//     }
+// };
 
-var client = nodemailer.createTransport(sgTransport(options));
+// var client = nodemailer.createTransport(sgTransport(options));
 
-var email = {
-    from: 'mike@growlybear.net.au',
-    to: 'michaelallan@optushomem.com.au',
-    subject: 'Heroku and Sendgrid and Node, oh my',
-    text: 'By golly, it worked!',
-    html: '<b>By golly, it worked!</b>'
-};
+// var email = {
+//     from: 'mike@growlybear.net.au',
+//     to: 'michaelallan@optushomem.com.au',
+//     subject: 'Heroku and Sendgrid and Node, oh my',
+//     text: 'By golly, it worked!',
+//     html: '<b>By golly, it worked!</b>'
+// };
 
-client.sendMail(email, function (err, info) {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log('Message send: ' + info.response);
-    }
+// client.sendMail(email, function (err, info) {
+//     if (err) {
+//         console.log(err);
+//     } else {
+//         console.log('Message send: ' + info.response);
+//     }
+// });
+
+// === scheduled-scraper Config Vars
+// MONGOHQ_URL:       mongodb://heroku:z0Ec3f70yZxNPZx4Xl7MLnmEFK6mKSkkbamxThtITTb22XjSELGJ9BHgTQ5OlzzKAXPy7dtUpv1jGG1Uk3zURg@linus.mongohq.com:10078/app30911505
+// SENDGRID_PASS:     B9RCL6zhx4Va2jwkBB
+// SENDGRID_PASSWORD: kzmvxepo
+// SENDGRID_USER:     growlybear_2
+// SENDGRID_USERNAME: app30911505@heroku.com
+
+var sendgrid  = require('sendgrid')('app30911505@heroku.com', 'kzmvxepo');
+sendgrid.send({
+  to:       'michaelallan@optushome.com.au',
+  from:     'mike@heroku.com',
+  subject:  'Hello World',
+  text:     'My first email through SendGrid.'
+}, function(err, json) {
+  if (err) { return console.error(err); }
+  console.log(json);
 });
