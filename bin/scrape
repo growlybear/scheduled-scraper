@@ -10,19 +10,18 @@ var sendgrid = require('sendgrid')(
 );
 
 // Email process report
-function report(result) {
-    sendgrid.send({
-        to:      'michaelallan@optushome.com.au',
-        from:    'noreply@scheduled-scraper.herokuapp.com',
-        subject: 'Scrape results for ' + (new Date).toDateString(),
-        text:    result
-    }, function (err, json) {
-        if (err) {
-            return console.error(err);
-        }
-    });
-}
-report('test');
+
+sendgrid.send({
+    to:      'michaelallan@optushome.com.au',
+    from:    'noreply@scheduled-scraper.herokuapp.com',
+    subject: 'Scrape results for ' + (new Date).toDateString(),
+    text:    result
+}, function (err, json) {
+    if (err) {
+        return console.error(err);
+    }
+});
+
 
 // Starting page at the Vic Supreme Court
 var civilCasesPage = url.format({
