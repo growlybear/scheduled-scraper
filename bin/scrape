@@ -61,4 +61,6 @@ async.waterfall([
     report('It worked :-)');
 
     console.log('Done!');
+
+    process.exit(0);
 });
