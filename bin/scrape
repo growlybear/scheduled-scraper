@@ -79,10 +79,11 @@ async.waterfall([
         }
     ].forEach(function (item) {
 
-        var case = new Case(item);
-        case.save(function (err, case) {
+        var courtCase = new Case(item);
+
+        courtCase.save(function (err, courtCase) {
             if (err) return console.error(err);
-            console.log(case);
+            console.log(courtCase);
         });
     });
 
