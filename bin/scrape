@@ -15,7 +15,7 @@ sendgrid.send({
     to:      'michaelallan@optushome.com.au',
     from:    'noreply@scheduled-scraper.herokuapp.com',
     subject: 'Scrape results for ' + (new Date).toDateString(),
-    text:    result
+    text:    'Some problem somewhere'
 }, function (err, json) {
     if (err) {
         return console.error(err);
