@@ -1,15 +1,16 @@
 #!/usr/bin/env node
 
-var workflow = require('../lib/workflow');
 var url = require('url');
 var async = require('async');
+var db = require('../models/db');
+var workflow = require('../lib/workflow');
 
-var sendgrid  = require('sendgrid')(
+var sendgrid = require('sendgrid')(
     process.env.SENDGRID_USERNAME,
     process.env.SENDGRID_PASSWORD
 );
 
-// Send process report
+// Email process report
 function report(result) {
     sendgrid.send({
         to:      'michaelallan@optushome.com.au',
@@ -57,6 +58,25 @@ async.waterfall([
 
 ], function (err) {
     if (err) return console.error('Processing failed: ', err);
+
+    db.cases.insert([
+        {
+            "caseStatus": "Open",
+            "actionCode": "COM Mortgages & Other Securities",
+            "filedDate": "22-Oct-2014",
+            "locality": "Supreme Court 436 Lonsdale St",
+            "caseTitle": "Mike testing",
+            "caseNumber": "S CI 2014 05668"
+        },
+        {
+            "caseStatus": "Open",
+            "actionCode": "COM Mortgages & Other Securities",
+            "filedDate": "22-Oct-2014",
+            "locality": "Supreme Court 436 Lonsdale St",
+            "caseTitle": "Mike testing",
+            "caseNumber": "S CI 2014 05667"
+        }
+    ]);
 
     report('It worked :-)');
 
