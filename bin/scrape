@@ -4,6 +4,7 @@ var url = require('url');
 var async = require('async');
 var db = require('../models/db');
 var workflow = require('../lib/workflow');
+var Case = require('../models/case');
 
 var sendgrid = require('sendgrid')(
     process.env.SENDGRID_USERNAME,
@@ -59,7 +60,7 @@ async.waterfall([
 ], function (err) {
     if (err) return console.error('Processing failed: ', err);
 
-    db.cases.insert([
+    [
         {
             "caseStatus": "Open",
             "actionCode": "COM Mortgages & Other Securities",
@@ -76,7 +77,14 @@ async.waterfall([
             "caseTitle": "Mike testing",
             "caseNumber": "S CI 2014 05667"
         }
-    ]);
+    ].forEach(function (item) {
+
+        var case = new Case(item);
+        case.save(function (err, case) {
+            if (err) return console.error(err);
+            console.log(case);
+        });
+    });
 
     report('It worked :-)');
 
