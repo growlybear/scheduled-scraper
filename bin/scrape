@@ -10,20 +10,6 @@ var sendgrid = require('sendgrid')(
     process.env.SENDGRID_PASSWORD
 );
 
-// Email process report
-function report(result) {
-    sendgrid.send({
-        to:      'michaelallan@optushome.com.au',
-        from:    'noreply@scheduled-scraper.herokuapp.com',
-        subject: 'Scrape results for ' + moment().format('LLL'),
-        text:    result
-    }, function (err, json) {
-        if (err) {
-            return console.error(err);
-        }
-    });
-}
-
 // Starting page at the Vic Supreme Court
 var civilCasesPage = url.format({
     protocol: 'http',
@@ -65,9 +51,15 @@ async.waterfall([
         process.exit(1);
     }
     else {
-        report('It worked :-)');
-
-        console.log('All Done!');
-        process.exit(0);
+        sendgrid.send({
+            to:      'michaelallan@optushome.com.au',
+            from:    'noreply@scheduled-scraper.herokuapp.com',
+            subject: 'Scrape results for ' + moment().format('LLL'),
+            text:    result
+        }, function (err, json) {
+            if (err) {
+                return console.error(err);
+            }
+        });
     }
 });
