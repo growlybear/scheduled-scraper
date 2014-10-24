@@ -56,10 +56,14 @@ async.waterfall([
     workflow.saveCasesJson
 
 ], function (err) {
-    if (err) return console.error('Processing failed: ', err);
+    if (err) {
+        console.error('Processing failed:', err);
+        process.exit(1);
+    }
+    else {
+        report('It worked :-)');
 
-    report('It worked :-)');
-
-    console.log('All Done!');
-    process.exit(0);
+        console.log('All Done!');
+        process.exit(0);
+    }
 });
