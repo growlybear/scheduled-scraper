@@ -58,8 +58,8 @@ async.waterfall([
 ], function (err) {
     if (err) return console.error('Processing failed: ', err);
 
-    // report('It worked :-)');
+    report('It worked :-)');
 
-    console.log('Done!');
-
+    console.log('All Done!');
+    process.exit(0);
 });
