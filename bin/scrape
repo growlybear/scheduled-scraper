@@ -55,7 +55,7 @@ async.waterfall([
             to:      'michaelallan@optushome.com.au',
             from:    'noreply@scheduled-scraper.herokuapp.com',
             subject: 'Scrape results for ' + moment().format('LLL'),
-            text:    result
+            text:    'Situation normal'
         }, function (err, json) {
             if (err) {
                 return console.error(err);
