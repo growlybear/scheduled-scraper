@@ -37,7 +37,7 @@ async.waterfall([
     workflow.downloadListPdf,
 
     // upload the file to S3
-    // workflow.uploadListPdf,
+    workflow.uploadListPdf,
 
     // extract all data from the pdf as an array of strings
     workflow.extractCaseListData,
@@ -57,8 +57,14 @@ async.waterfall([
             subject: 'Scrape results for ' + moment().format('LLL'),
             text:    'All new Vic Supreme Court cases scraped and loaded'
         }, function (err, json) {
-            if (err) console.error('Sendgrid error:', err);
-            process.exit(0);
+            if (err) {
+                console.error('Sendgrid error:', err);
+                process.exit(1);
+            }
+            else {
+                console.log('Processing complete, email report dispatched');
+                process.exit(0);
+            }
         });
     }
 });
