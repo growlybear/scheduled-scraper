@@ -55,11 +55,9 @@ async.waterfall([
             to:      'michaelallan@optushome.com.au',
             from:    'noreply@scheduled-scraper.herokuapp.com',
             subject: 'Scrape results for ' + moment().format('LLL'),
-            text:    'Situation normal'
+            text:    'All new Vic Supreme Court cases scraped and loaded'
         }, function (err, json) {
-            if (err) {
-                return console.error(err);
-            }
+            if (err) console.error('Sendgrid error:', err);
             process.exit(0);
         });
     }

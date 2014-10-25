@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var dbURI = process.env.MONGOHQ_URL;
+// var dbURI = 'mongodb://localhost/mortgage_listings';
 
 mongoose.connect(dbURI);
 

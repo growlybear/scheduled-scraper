@@ -1,4 +1,6 @@
 var mongoose = require('mongoose');
+var Promise = require('bluebird');
+
 var Schema = mongoose.Schema;
 
 var CaseSchema = new Schema({
@@ -12,4 +14,11 @@ var CaseSchema = new Schema({
 
 });
 
-module.exports = mongoose.model('Case', CaseSchema);
+var Case = mongoose.model('Case', CaseSchema);
+
+// Enable synchronous saves
+// cf. http://stackoverflow.com/questions/25555139/bluebird-promisies-crud-example-using-nodejs-express-and-mongoose?rq=1
+Promise.promisifyAll(Case);
+Promise.promisifyAll(Case.prototype);
+
+module.exports = Case;
