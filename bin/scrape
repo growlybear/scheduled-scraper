@@ -60,6 +60,7 @@ async.waterfall([
             if (err) {
                 return console.error(err);
             }
+            process.exit(0);
         });
     }
 });
