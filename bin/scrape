@@ -67,7 +67,7 @@ async.waterfall([
                 process.exit(1);
             }
             else {
-                console.log('Processing complete, email report dispatched');
+                console.log('Processing complete! All new cases saved, email report dispatched');
                 process.exit(0);
             }
         });
