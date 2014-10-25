@@ -46,6 +46,11 @@ async.waterfall([
     workflow.saveCasesJson
 
 ], function (err) {
+
+    var re = /E11000 duplicate key/;
+    // Don't worry about 'E11000 duplicate key error's
+    if (re.test(err)) err = null;
+
     if (err) {
         console.error('Processing failed:', err);
         process.exit(1);
