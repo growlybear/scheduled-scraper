@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+var dotenv = require('dotenv');
+dotenv.load();
+
 var url = require('url');
 var async = require('async');
 var workflow = require('../lib/workflow');
