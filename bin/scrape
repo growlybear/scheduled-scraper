@@ -20,6 +20,7 @@ var civilCasesPage = url.format({
     pathname: 'home/forms+fees+and+services/registry+services/list+of+civil+cases/'
 });
 
+console.log(moment().format('dddd'));
 
 // Begin processing ...
 async.waterfall([
