@@ -13,6 +13,10 @@ var sendgrid = require('sendgrid')(
     process.env.SENDGRID_PASSWORD
 );
 
+// Global variable to save passing a filename all down the waterfall
+// FIXME yeah ... globals
+global.uploaded = 'https://s3.amazonaws.com/scheduled-scraper/';
+
 // Starting page at the Vic Supreme Court
 var civilCasesPage = url.format({
     protocol: 'http',
@@ -20,7 +24,13 @@ var civilCasesPage = url.format({
     pathname: 'home/forms+fees+and+services/registry+services/list+of+civil+cases/'
 });
 
-console.log(moment().format('dddd'));
+// No need to scrape on the weekend (temp workaround while using Heroku's simple scheduler)
+// FIXME cf. https://devcenter.heroku.com/articles/scheduled-jobs-custom-clock-processes
+// var today = moment().format('dddd');
+// if (today === 'Saturday' || today === 'Sunday') {
+//     console.log('It\'s the weekend ... take it easy :-)')
+//     process.exit(0);
+// }
 
 // Begin processing ...
 async.waterfall([
@@ -64,7 +74,11 @@ async.waterfall([
             to:      'michaelallan@optushome.com.au',
             from:    'noreply@scheduled-scraper.herokuapp.com',
             subject: 'Scrape results for ' + moment().format('LLL'),
-            text:    'All new Vic Supreme Court cases scraped and loaded'
+            text: (
+                'All new Vic Supreme Court cases scraped and loaded.\n\n' +
+                'Download an archived version of the Court list from here:\n\n' +
+                global.uploaded
+            )
         }, function (err, json) {
             if (err) {
                 console.error('Sendgrid error:', err);
