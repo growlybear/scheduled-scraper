@@ -77,7 +77,7 @@ async.waterfall([
             text: (
                 'All new Vic Supreme Court cases scraped and loaded.\n\n' +
                 'An archived version of the original Court list can be found here:\n\n' +
-                '    ' + global.uploaded
+                global.uploaded
             )
         }, function (err, json) {
             if (err) {
