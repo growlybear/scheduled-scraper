@@ -75,7 +75,7 @@ async.waterfall([
             from:    'noreply@scheduled-scraper.herokuapp.com',
             subject: 'Scrape results for ' + moment().format('LLL'),
             text: (
-                'All new Vic Supreme Court cases scraped and loaded.\n\n' +
+                'All new Vic Supreme Court cases for RER consideration have been scraped and loaded.\n\n' +
                 'An archived version of the original Court list can be found here:\n\n' +
                 global.uploaded
             )
