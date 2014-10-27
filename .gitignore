@@ -21,6 +21,9 @@ coverage.html
 # Environment config
 .env*
 
+# Iron.io config
+iron.json
+
 # Coverage directory used by tools like istanbul
 coverage
 
