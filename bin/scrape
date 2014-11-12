@@ -51,7 +51,7 @@ d.on('error', function (err) {
             process.exit(1);
         }
         else {
-            console.log('Error processing complete! Notification email report dispatched');
+            console.log('ERROR DETECTED! Notification email report dispatched');
             process.exit(0);
         }
     });
