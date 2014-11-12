@@ -4,6 +4,7 @@ var dotenv = require('dotenv');
 dotenv.load();
 
 var url = require('url');
+
 var async = require('async');
 var workflow = require('../lib/workflow');
 var moment = require('moment');
@@ -32,62 +33,88 @@ var civilCasesPage = url.format({
 //     process.exit(0);
 // }
 
-// Begin processing ...
-async.waterfall([
-    // dummy function, just to allow parameters to be passed in to the waterfall initially
-    // cf. https://github.com/caolan/async/issues/14
-    function (callback) {
-        callback(null, civilCasesPage);
-    },
 
-    // fetch the page containing a link to the court case list, updated daily,
-    // and archive it locally so we can review and revise our selectors as necessary
-    workflow.fetchCaseListPage,
+// Set up a domain to handle non-zero exit codes
+var domain = require('domain');
+var d = domain.create();
 
-    // extract the link to a pdf of the latest court cases
-    workflow.extractDailyListUrl,
+// Domain emits 'error' when an error event is unhandled
+d.on('error', function (err) {
+    sendgrid.send({
+        to:      'michaelallan@optushome.com.au',
+        from:    'noreply@scheduled-scraper.herokuapp.com',
+        subject: 'WHOOPS!!! Scrape FAILED for ' + moment().format('LLL'),
+        text:    err.stack
+    }, function (err, json) {
+        if (err) {
+            console.error('Sendgrid error:', err);
+            process.exit(1);
+        }
+        else {
+            console.log('Error processing complete! Notification email report dispatched');
+            process.exit(0);
+        }
+    });
+});
 
-    // download the pdf
-    workflow.downloadListPdf,
+d.run(function () {
+    // Begin processing ...
+    async.waterfall([
+        // dummy function, just to allow parameters to be passed in to the waterfall initially
+        // cf. https://github.com/caolan/async/issues/14
+        function (callback) {
+            callback(null, civilCasesPage);
+        },
 
-    // upload the file to S3
-    workflow.uploadListPdf,
+        // fetch the page containing a link to the court case list, updated daily,
+        // and archive it locally so we can review and revise our selectors as necessary
+        workflow.fetchCaseListPage,
 
-    // extract all data from the pdf as an array of strings
-    workflow.extractCaseListData,
+        // extract the link to a pdf of the latest court cases
+        workflow.extractDailyListUrl,
 
-    // write the json data to file
-    workflow.saveCasesJson
+        // download the pdf
+        workflow.downloadListPdf,
 
-], function (err) {
+        // upload the file to S3
+        workflow.uploadListPdf,
 
-    var re = /E11000 duplicate key/;
-    // Don't worry about 'E11000 duplicate key error's
-    if (re.test(err)) err = null;
+        // extract all data from the pdf as an array of strings
+        workflow.extractCaseListData,
 
-    if (err) {
-        console.error('Processing failed:', err);
-        process.exit(1);
-    }
-    else {
-        sendgrid.send({
-            to:      'michaelallan@optushome.com.au',
-            from:    'noreply@scheduled-scraper.herokuapp.com',
-            subject: 'Scrape results for ' + moment().format('LLL'),
-            text: (
-                'All new Vic Supreme Court cases for RER consideration have been scraped and loaded.\n\n' +
-                'An archived version of the original Court list can be found here:\n\n' +
-                global.uploaded
-            )
-        }, function (err, json) {
-            if (err) {
-                console.error('Sendgrid error:', err);
-                process.exit(1);
-            }
-            else {
-                console.log('Processing complete! All new cases saved, email report dispatched');
-                process.exit(0);
-            }
-        });
-    }
+        // write the json data to file
+        workflow.saveCasesJson
+
+    ], function (err) {
+
+        var re = /E11000 duplicate key/;
+        // Don't worry about 'E11000 duplicate key error's
+        if (re.test(err)) err = null;
+
+        if (err) {
+            console.error('Processing failed:', err);
+            process.exit(1);
+        }
+        else {
+            sendgrid.send({
+                to:      'michaelallan@optushome.com.au',
+                from:    'noreply@scheduled-scraper.herokuapp.com',
+                subject: 'Scrape results for ' + moment().format('LLL'),
+                text: (
+                    'All new Vic Supreme Court cases for RER consideration have been scraped and loaded.\n\n' +
+                    'An archived version of the original Court list can be found here:\n\n' +
+                    global.uploaded
+                )
+            }, function (err, json) {
+                if (err) {
+                    console.error('Sendgrid error:', err);
+                    process.exit(1);
+                }
+                else {
+                    console.log('Processing complete! All new cases saved, email report dispatched');
+                    process.exit(0);
+                }
+            });
+        }
+    });
 });
