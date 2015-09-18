@@ -7,7 +7,7 @@ var extractCaseListData = require('./lib/extractCaseListData');
 var p = './archive/pdf';
 var process = [];
 
-function writeResults(file, data) {
+function writeResults(discard, file, data) {
   jf.writeFile(file, data, function (err) {
     if (err) console.error(err);
     var next = process.pop();
