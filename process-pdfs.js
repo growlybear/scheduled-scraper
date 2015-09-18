@@ -20,8 +20,6 @@ fs.readdir(p, function (err, files) {
     throw err;
   }
 
-  var mike = ['13-11-2014.pdf'];
-
   files.map(function (file) {
     return path.join(p, file);
   }).filter(function (file) {
